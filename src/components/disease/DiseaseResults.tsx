@@ -33,7 +33,6 @@ export interface DiseaseResultsProps {
 export function DiseaseResults({
   result,
   language = 'english',
-  onPlayAudio,
   onRetake,
   onSave,
   onShare,

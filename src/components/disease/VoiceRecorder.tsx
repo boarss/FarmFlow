@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mic, Square, Play, Pause, Trash2, Check, Loader2 } from 'lucide-react';
+import { Mic, Square, Play, Pause, Trash2, Check } from 'lucide-react';
 import { useVoiceRecorder } from '../../hooks/useVoiceRecorder';
 import { Language } from '../../types';
 

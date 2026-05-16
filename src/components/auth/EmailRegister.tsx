@@ -55,13 +55,13 @@ export function EmailRegister() {
 
     try {
       const normalizedEmail = normalizeEmail(formData.email);
-      const result = await signUpWithEmail(normalizedEmail, formData.password, formData.name);
+      const result = await signUpWithEmail(normalizedEmail, formData.password, formData.name) as any;
       
       if (result.success) {
         // Check if email confirmation is required
         if (result.data?.user && !result.data.user.confirmed_at) {
-          navigate('/auth/verify-email', { 
-            state: { email: normalizedEmail } 
+          navigate('/auth/verify-email', {
+            state: { email: normalizedEmail }
           });
         } else {
           navigate('/onboarding');

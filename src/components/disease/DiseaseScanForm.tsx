@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Camera, Mic, Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 import { CameraCapture } from './CameraCapture';
 import { VoiceRecorder } from './VoiceRecorder';
 import { DiseaseResults } from './DiseaseResults';
@@ -79,10 +79,7 @@ export function DiseaseScanForm({
 
     try {
       // Call disease detection service
-      const detectionResult = await detectDisease(
-        imagePreview,
-        voiceNote ? URL.createObjectURL(voiceNote) : undefined
-      );
+      const detectionResult = await detectDisease(imagePreview);
 
       setResult(detectionResult);
       setStep('results');

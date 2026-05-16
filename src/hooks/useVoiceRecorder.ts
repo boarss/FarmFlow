@@ -32,7 +32,6 @@ export function useVoiceRecorder(
 ): UseVoiceRecorderReturn {
   const {
     maxDuration = 60,
-    language = 'english',
     onError,
     onMaxDurationReached,
   } = options;

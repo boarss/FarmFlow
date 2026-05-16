@@ -52,8 +52,7 @@ const adjustConfidence = (baseConfidence: number): number => {
  * @returns Promise with disease detection result
  */
 export async function detectDisease(
-  imageUrl: string,
-  voiceNote?: string
+  imageUrl: string
 ): Promise<DiseaseResult> {
   // Simulate network delay
   await simulateDelay();
@@ -119,7 +118,7 @@ export async function getDiseaseById(diseaseId: string): Promise<DiseaseResult |
 export async function getDiseaseCatalog(): Promise<DiseaseResult[]> {
   await simulateDelay(300, 700);
 
-  const diseases = Object.entries(diseasesData as DiseasesData).map(([key, data]) => ({
+  const diseases = Object.entries(diseasesData as DiseasesData).map(([, data]) => ({
     disease: data.name,
     localizedName: data.localizedName,
     confidence: data.confidence,
