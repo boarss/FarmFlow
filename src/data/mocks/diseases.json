@@ -1,0 +1,187 @@
+{
+  "maize_leaf_blight": {
+    "id": "disease_001",
+    "name": "Northern Corn Leaf Blight",
+    "localizedName": {
+      "english": "Northern Corn Leaf Blight",
+      "hausa": "Cutar ganyen masara",
+      "yoruba": "Arun ewe agbado",
+      "igbo": "Oria akwukwo oka"
+    },
+    "confidence": 0.87,
+    "severity": "medium",
+    "treatment": {
+      "steps": [
+        "Remove and destroy infected leaves immediately",
+        "Apply fungicide within 48 hours of detection",
+        "Improve field drainage to reduce humidity",
+        "Space plants properly for better air circulation"
+      ],
+      "products": [
+        {
+          "name": "Mancozeb 80WP",
+          "dosage": "2kg per hectare mixed with 200 liters of water",
+          "cost": "₦3,500 - ₦4,000",
+          "availability": "Available at local agro-dealers"
+        },
+        {
+          "name": "Ridomil Gold",
+          "dosage": "50g per 20 liters of water",
+          "cost": "₦2,800",
+          "availability": "Available at major agro-dealers"
+        }
+      ],
+      "timeline": "Apply treatment every 7-10 days for 3 weeks",
+      "cost": 8000
+    }
+  },
+  "cassava_mosaic": {
+    "id": "disease_002",
+    "name": "Cassava Mosaic Disease",
+    "localizedName": {
+      "english": "Cassava Mosaic Disease",
+      "hausa": "Cutar rogo na rogo",
+      "yoruba": "Arun ege",
+      "igbo": "Oria akpu mosaic"
+    },
+    "confidence": 0.92,
+    "severity": "high",
+    "treatment": {
+      "steps": [
+        "Remove and burn infected plants immediately",
+        "Use disease-free planting materials",
+        "Control whitefly vectors with insecticides",
+        "Plant resistant varieties like TME 419"
+      ],
+      "products": [
+        {
+          "name": "Confidor (Imidacloprid)",
+          "dosage": "50ml per 20 liters of water",
+          "cost": "₦4,500",
+          "availability": "Available at agro-dealers"
+        }
+      ],
+      "timeline": "Preventive measures are best. Once infected, remove plants",
+      "cost": 5000
+    }
+  },
+  "tomato_blight": {
+    "id": "disease_003",
+    "name": "Tomato Late Blight",
+    "localizedName": {
+      "english": "Tomato Late Blight",
+      "hausa": "Cutar tumatur",
+      "yoruba": "Arun tomato",
+      "igbo": "Oria tomato"
+    },
+    "confidence": 0.85,
+    "severity": "high",
+    "treatment": {
+      "steps": [
+        "Remove infected fruits and leaves",
+        "Apply copper-based fungicide immediately",
+        "Avoid overhead watering",
+        "Harvest mature fruits early"
+      ],
+      "products": [
+        {
+          "name": "Kocide (Copper Hydroxide)",
+          "dosage": "3kg per hectare",
+          "cost": "₦6,000",
+          "availability": "Available at agro-dealers"
+        },
+        {
+          "name": "Ridomil Gold MZ",
+          "dosage": "2.5kg per hectare",
+          "cost": "₦8,500",
+          "availability": "Available at major dealers"
+        }
+      ],
+      "timeline": "Apply every 5-7 days during wet season",
+      "cost": 12000
+    }
+  },
+  "rice_blast": {
+    "id": "disease_004",
+    "name": "Rice Blast Disease",
+    "localizedName": {
+      "english": "Rice Blast Disease",
+      "hausa": "Cutar shinkafa",
+      "yoruba": "Arun iresi",
+      "igbo": "Oria osikapa"
+    },
+    "confidence": 0.89,
+    "severity": "high",
+    "treatment": {
+      "steps": [
+        "Apply fungicide at first sign of disease",
+        "Drain field to reduce humidity",
+        "Apply nitrogen fertilizer in split doses",
+        "Use resistant varieties"
+      ],
+      "products": [
+        {
+          "name": "Tricyclazole 75% WP",
+          "dosage": "200g per hectare",
+          "cost": "₦5,500",
+          "availability": "Available at agro-dealers"
+        }
+      ],
+      "timeline": "Apply at tillering and booting stages",
+      "cost": 6000
+    }
+  },
+  "yam_anthracnose": {
+    "id": "disease_005",
+    "name": "Yam Anthracnose",
+    "localizedName": {
+      "english": "Yam Anthracnose",
+      "hausa": "Cutar doya",
+      "yoruba": "Arun isu",
+      "igbo": "Oria ji"
+    },
+    "confidence": 0.83,
+    "severity": "medium",
+    "treatment": {
+      "steps": [
+        "Remove infected leaves and vines",
+        "Apply fungicide spray",
+        "Improve field sanitation",
+        "Use healthy seed yams"
+      ],
+      "products": [
+        {
+          "name": "Mancozeb 80WP",
+          "dosage": "2.5kg per hectare",
+          "cost": "₦4,000",
+          "availability": "Available at local dealers"
+        }
+      ],
+      "timeline": "Apply every 14 days during rainy season",
+      "cost": 7000
+    }
+  },
+  "healthy": {
+    "id": "disease_000",
+    "name": "Healthy Crop",
+    "localizedName": {
+      "english": "Healthy Crop",
+      "hausa": "Amfani mai kyau",
+      "yoruba": "Oko ti o ni ilera",
+      "igbo": "Ihe ubi di mma"
+    },
+    "confidence": 0.95,
+    "severity": "low",
+    "treatment": {
+      "steps": [
+        "Continue regular monitoring",
+        "Maintain good farming practices",
+        "Apply preventive measures",
+        "Keep field clean"
+      ],
+      "products": [],
+      "timeline": "Regular monitoring recommended",
+      "cost": 0
+    }
+  }
+}
