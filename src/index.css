@@ -3,10 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  
   body {
     @apply bg-white text-gray-900 antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -19,7 +15,8 @@
   a,
   input[type="button"],
   input[type="submit"] {
-    @apply min-h-touch min-w-touch;
+    min-height: 44px;
+    min-width: 44px;
   }
 
   /* High contrast for outdoor visibility */
@@ -59,7 +56,7 @@
 
   /* Loading spinner */
   .spinner {
-    @apply inline-block w-6 h-6 border-4 border-gray-200 border-t-primary-500 rounded-full;
+    @apply inline-block w-6 h-6 border-4 border-gray-200 border-t-green-600 rounded-full;
     animation: spin 1s linear infinite;
   }
 
@@ -87,8 +84,8 @@
 
   /* Button variants */
   .btn-primary {
-    @apply bg-primary-500 text-white px-6 py-3 rounded-lg font-medium;
-    @apply hover:bg-primary-600 active:bg-primary-700;
+    @apply bg-green-600 text-white px-6 py-3 rounded-lg font-medium;
+    @apply hover:bg-green-700 active:bg-green-800;
     @apply transition-colors duration-200;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
@@ -100,23 +97,23 @@
   }
 
   .btn-outline {
-    @apply border-2 border-primary-500 text-primary-500 px-6 py-3 rounded-lg font-medium;
-    @apply hover:bg-primary-50 active:bg-primary-100;
+    @apply border-2 border-green-600 text-green-600 px-6 py-3 rounded-lg font-medium;
+    @apply hover:bg-green-50 active:bg-green-100;
     @apply transition-colors duration-200;
   }
 
   /* Input styles */
   .input {
     @apply w-full px-4 py-3 border border-gray-300 rounded-lg;
-    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent;
     @apply text-base;
   }
 
   /* Voice button */
   .voice-button {
-    @apply relative w-16 h-16 rounded-full bg-primary-500 text-white;
+    @apply relative w-16 h-16 rounded-full bg-green-600 text-white;
     @apply flex items-center justify-center;
-    @apply hover:bg-primary-600 active:bg-primary-700;
+    @apply hover:bg-green-700 active:bg-green-800;
     @apply transition-colors duration-200;
     @apply shadow-lg;
   }
@@ -135,19 +132,20 @@
 
   .bottom-nav-item {
     @apply flex flex-col items-center justify-center;
-    @apply min-w-touch min-h-touch;
-    @apply text-gray-600 hover:text-primary-500;
+    min-width: 44px;
+    min-height: 44px;
+    @apply text-gray-600 hover:text-green-600;
     @apply transition-colors duration-200;
   }
 
   .bottom-nav-item.active {
-    @apply text-primary-500;
+    @apply text-green-600;
   }
 
   /* Floating Action Button */
   .fab {
     @apply fixed bottom-20 right-4 z-40;
-    @apply w-14 h-14 rounded-full bg-primary-500 text-white;
+    @apply w-14 h-14 rounded-full bg-green-600 text-white;
     @apply flex items-center justify-center;
     @apply shadow-lg hover:shadow-xl;
     @apply transition-all duration-200;

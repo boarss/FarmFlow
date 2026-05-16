@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { validateAndFormatPhone } from '../../utils/phoneValidation';
 import { Phone, Loader2 } from 'lucide-react';
@@ -130,6 +130,27 @@ export function Login() {
             <p className="text-sm text-gray-600">
               We'll send you a one-time password (OTP) via SMS
             </p>
+          </div>
+        </div>
+
+        {/* Alternative Auth Method */}
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-green-50 text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center">
+            <Link
+              to="/auth/email-login"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+            >
+              ✉️ Email & Password
+            </Link>
           </div>
         </div>
 

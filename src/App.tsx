@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { Login, VerifyOTP, Onboarding, ProtectedRoute, UserProfile } from './components/auth';
+import {
+  Login,
+  VerifyOTP,
+  EmailLogin,
+  EmailRegister,
+  ForgotPassword,
+  Onboarding,
+  ProtectedRoute,
+  UserProfile
+} from './components/auth';
+import { DiseaseDetection } from './pages/DiseaseDetection';
 
 function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -32,9 +42,14 @@ function App() {
 
           {/* Routes */}
           <Routes>
-            {/* Public Routes */}
+            {/* Public Routes - Phone Auth */}
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/verify-otp" element={<VerifyOTP />} />
+            
+            {/* Public Routes - Email Auth */}
+            <Route path="/auth/email-login" element={<EmailLogin />} />
+            <Route path="/auth/email-register" element={<EmailRegister />} />
+            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
             
             {/* Onboarding Route */}
             <Route
@@ -65,8 +80,14 @@ function App() {
               }
             />
             
-            {/* Default Route */}
-            <Route path="/" element={<Navigate to="/auth/login" replace />} />
+            {/* Disease Detection Routes - Bypass auth for development */}
+            <Route
+              path="/disease-detection"
+              element={<DiseaseDetection />}
+            />
+            
+            {/* Default Route - Go directly to disease detection for testing */}
+            <Route path="/" element={<Navigate to="/disease-detection" replace />} />
             <Route path="*" element={<Navigate to="/auth/login" replace />} />
           </Routes>
         </div>
@@ -96,12 +117,16 @@ function Dashboard() {
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-            <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+            <a
+              href="/disease-detection"
+              className="border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-green-300 transition-all cursor-pointer"
+            >
               <h3 className="font-semibold text-lg mb-2">🔍 Crop Disease Detection</h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 mb-2">
                 Take photos of your crops and get instant disease identification
               </p>
-            </div>
+              <span className="text-xs text-green-600 font-medium">Click to start →</span>
+            </a>
             
             <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
               <h3 className="font-semibold text-lg mb-2">💰 Market Prices</h3>

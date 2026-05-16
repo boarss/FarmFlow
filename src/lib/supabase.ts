@@ -22,6 +22,8 @@ export const supabase = createClient(
 
 // Auth helpers
 export const auth = {
+  // ===== Phone Authentication =====
+  
   // Send OTP to phone number
   sendOTP: async (phone: string) => {
     try {
@@ -54,6 +56,75 @@ export const auth = {
     }
   },
 
+  // ===== Email/Password Authentication =====
+  
+  // Sign up with email and password
+  signUpWithEmail: async (email: string, password: string, metadata?: { name?: string }) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+        },
+      });
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error signing up with email:', error);
+      return { success: false, error };
+    }
+  },
+
+  // Sign in with email and password
+  signInWithEmail: async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error signing in with email:', error);
+      return { success: false, error };
+    }
+  },
+
+  // Send password reset email
+  resetPassword: async (email: string) => {
+    try {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      return { success: false, error };
+    }
+  },
+
+  // Update password
+  updatePassword: async (newPassword: string) => {
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error updating password:', error);
+      return { success: false, error };
+    }
+  },
+
+  // ===== Common Authentication Methods =====
+  
   // Get current session
   getSession: async () => {
     try {

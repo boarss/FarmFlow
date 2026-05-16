@@ -8,8 +8,15 @@ interface AuthContextType {
   farmer: Farmer | null;
   session: Session | null;
   loading: boolean;
+  // Phone authentication
   signInWithPhone: (phone: string) => Promise<{ success: boolean; error?: any }>;
   verifyOTP: (phone: string, token: string) => Promise<{ success: boolean; error?: any }>;
+  // Email/Password authentication
+  signUpWithEmail: (email: string, password: string, name?: string) => Promise<{ success: boolean; error?: any }>;
+  signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; error?: any }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: any }>;
+  updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: any }>;
+  // Common methods
   signOut: () => Promise<void>;
   updateFarmerProfile: (updates: Partial<Farmer>) => Promise<void>;
 }
@@ -97,6 +104,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signUpWithEmail = async (email: string, password: string, name?: string) => {
+    try {
+      const result = await auth.signUpWithEmail(email, password, { name });
+      return result;
+    } catch (error) {
+      console.error('Error signing up with email:', error);
+      return { success: false, error };
+    }
+  };
+
+  const signInWithEmail = async (email: string, password: string) => {
+    try {
+      const result = await auth.signInWithEmail(email, password);
+      return result;
+    } catch (error) {
+      console.error('Error signing in with email:', error);
+      return { success: false, error };
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    try {
+      const result = await auth.resetPassword(email);
+      return result;
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      return { success: false, error };
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const result = await auth.updatePassword(newPassword);
+      return result;
+    } catch (error) {
+      console.error('Error updating password:', error);
+      return { success: false, error };
+    }
+  };
+
   const signOut = async () => {
     try {
       await auth.signOut();
@@ -132,6 +179,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     signInWithPhone,
     verifyOTP,
+    signUpWithEmail,
+    signInWithEmail,
+    resetPassword,
+    updatePassword,
     signOut,
     updateFarmerProfile,
   };
