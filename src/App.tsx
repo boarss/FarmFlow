@@ -14,6 +14,7 @@ import {
 import { Dashboard } from './pages/Dashboard';
 import { DiseaseDetection } from './pages/DiseaseDetection';
 import { MarketPrices } from './pages/MarketPrices';
+import { PlantingCalendar } from './pages/PlantingCalendar';
 
 function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -93,6 +94,15 @@ function App() {
               element={
                 <ProtectedRoute requireOnboarding>
                   <MarketPrices />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/planting-calendar"
+              element={
+                <ProtectedRoute requireOnboarding>
+                  <PlantingCalendar />
                 </ProtectedRoute>
               }
             />

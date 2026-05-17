@@ -237,7 +237,10 @@ export function Dashboard() {
 
         {/* Additional Features */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-emerald-50 p-4 rounded-2xl flex flex-col justify-between aspect-square">
+          <div 
+            onClick={() => navigate('/planting-calendar')}
+            className="bg-emerald-50 p-4 rounded-2xl flex flex-col justify-between aspect-square cursor-pointer hover:shadow-md transition-shadow active:scale-95"
+          >
             <Calendar className="w-8 h-8 text-emerald-600 mb-2" />
             <div>
               <h3 className="font-bold text-emerald-900 leading-tight">Planting Calendar</h3>
@@ -264,7 +267,10 @@ export function Dashboard() {
           <Scan className="w-6 h-6" />
           <span className="text-[10px]">Scans</span>
         </button>
-        <button className="flex flex-col items-center gap-1 text-gray-400">
+        <button 
+          onClick={() => navigate('/planting-calendar')}
+          className="flex flex-col items-center gap-1 text-gray-400"
+        >
           <Calendar className="w-6 h-6" />
           <span className="text-[10px]">Planner</span>
         </button>
