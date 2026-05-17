@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Country } from '../../types';
 import { Loader2, MapPin, User, Sprout, Globe } from 'lucide-react';
+import { COUNTRIES, REGIONS } from '../../constants/regions';
 
 interface OnboardingData {
   name: string;
@@ -12,8 +13,6 @@ interface OnboardingData {
   farmSize: string;
   primaryCrops: string[];
 }
-
-import { COUNTRIES, REGIONS } from '../../constants/regions';
 
 const COMMON_CROPS = [
   'Maize', 'Rice', 'Cassava', 'Yam', 'Sorghum', 'Millet',
@@ -37,7 +36,7 @@ export function Onboarding() {
   const navigate = useNavigate();
 
   const handleChange = (field: keyof OnboardingData, value: string | string[]) => {
-    setData({ ...data, [field]: value });
+    setData(prev => ({ ...prev, [field]: value }));
     setError('');
   };
 
