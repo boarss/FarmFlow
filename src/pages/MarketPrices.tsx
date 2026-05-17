@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -26,11 +26,7 @@ export function MarketPrices() {
   const country = COUNTRIES.find(c => c.id === countryId);
   const currencySymbol = country?.symbol || '₦';
 
-  useEffect(() => {
-    loadPrices();
-  }, [countryId]);
-
-  async function loadPrices() {
+  const loadPrices = useCallback(async () => {
     try {
       setLoading(true);
       const result = await db.getMarketPrices(undefined, countryId);
@@ -42,7 +38,11 @@ export function MarketPrices() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [countryId]);
+
+  useEffect(() => {
+    loadPrices();
+  }, [loadPrices]);
 
   const filteredPrices = prices.filter(price => {
     const matchesSearch = price.crop.toLowerCase().includes(searchTerm.toLowerCase()) ||

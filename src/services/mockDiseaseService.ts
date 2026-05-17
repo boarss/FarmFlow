@@ -8,7 +8,7 @@ import diseasesData from '../data/mocks/diseases.json';
  */
 
 // Type for the diseases data structure
-type DiseasesData = Record<string, any>;
+type DiseasesData = Record<string, unknown>;
 
 /**
  * Simulate network delay

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Mic, Square, Play, Pause, Trash2, Check } from 'lucide-react';
 import { useVoiceRecorder } from '../../hooks/useVoiceRecorder';
 import { Language } from '../../types';
@@ -27,7 +27,7 @@ export function VoiceRecorder({
 }: VoiceRecorderProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackTime, setPlaybackTime] = useState(0);
-  const audioRef = useState<HTMLAudioElement | null>(null)[0];
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const {
     isRecording,
@@ -67,10 +67,10 @@ export function VoiceRecorder({
     if (!audioUrl) return;
 
     if (isPlaying) {
-      audioRef?.pause();
+      audioRef.current?.pause();
       setIsPlaying(false);
     } else {
-      if (!audioRef) {
+      if (!audioRef.current) {
         const audio = new Audio(audioUrl);
         audio.onended = () => {
           setIsPlaying(false);
@@ -79,9 +79,9 @@ export function VoiceRecorder({
         audio.ontimeupdate = () => {
           setPlaybackTime(Math.floor(audio.currentTime));
         };
-        useState<HTMLAudioElement | null>(audio);
+        audioRef.current = audio;
       }
-      audioRef?.play();
+      audioRef.current?.play();
       setIsPlaying(true);
     }
   };
@@ -103,12 +103,12 @@ export function VoiceRecorder({
   // Cleanup audio on unmount
   useEffect(() => {
     return () => {
-      if (audioRef) {
-        audioRef.pause();
-        audioRef.src = '';
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
       }
     };
-  }, [audioRef]);
+  }, []);
 
   // Show error if not supported
   if (!isSupported) {

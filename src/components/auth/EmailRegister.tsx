@@ -55,7 +55,7 @@ export function EmailRegister() {
 
     try {
       const normalizedEmail = normalizeEmail(formData.email);
-      const result = await signUpWithEmail(normalizedEmail, formData.password, formData.name) as any;
+      const result = await signUpWithEmail(normalizedEmail, formData.password, formData.name);
       
       if (result.success) {
         // Check if email confirmation is required

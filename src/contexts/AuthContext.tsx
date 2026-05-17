@@ -9,13 +9,13 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   // Phone authentication
-  signInWithPhone: (phone: string) => Promise<{ success: boolean; error?: any }>;
-  verifyOTP: (phone: string, token: string) => Promise<{ success: boolean; error?: any }>;
+  signInWithPhone: (phone: string) => Promise<{ success: boolean; error?: unknown }>;
+  verifyOTP: (phone: string, token: string) => Promise<{ success: boolean; error?: unknown }>;
   // Email/Password authentication
-  signUpWithEmail: (email: string, password: string, name?: string) => Promise<{ success: boolean; error?: any }>;
-  signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; error?: any }>;
-  resetPassword: (email: string) => Promise<{ success: boolean; error?: any }>;
-  updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: any }>;
+  signUpWithEmail: (email: string, password: string, name?: string) => Promise<{ success: boolean; error?: unknown }>;
+  signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; error?: unknown }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: unknown }>;
+  updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: unknown }>;
   // Common methods
   signOut: () => Promise<void>;
   updateFarmerProfile: (updates: Partial<Farmer>) => Promise<void>;
@@ -190,6 +190,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {

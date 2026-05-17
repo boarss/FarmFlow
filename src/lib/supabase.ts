@@ -162,7 +162,7 @@ export const auth = {
   },
 
   // Listen to auth state changes
-  onAuthStateChange: (callback: (event: string, session: any) => void) => {
+  onAuthStateChange: (callback: (event: string, session: Session | null) => void) => {
     return supabase.auth.onAuthStateChange(callback);
   },
 };
@@ -218,7 +218,7 @@ export const db = {
     try {
       const { data, error } = await supabase
         .from('farmers')
-        .select('*')
+        .select('id, user_id, phone, name, country, state, lga, farm_size, primary_crops, language, created_at')
         .eq('user_id', userId)
         .single();
 
@@ -230,7 +230,7 @@ export const db = {
     }
   },
 
-  createFarmer: async (farmer: any) => {
+  createFarmer: async (farmer: Record<string, unknown>) => {
     try {
       const { data, error } = await supabase
         .from('farmers')
@@ -246,7 +246,7 @@ export const db = {
     }
   },
 
-  updateFarmer: async (id: string, updates: any) => {
+  updateFarmer: async (id: string, updates: Record<string, unknown>) => {
     try {
       const { data, error } = await supabase
         .from('farmers')
@@ -268,7 +268,7 @@ export const db = {
     try {
       const { data, error } = await supabase
         .from('crops')
-        .select('*')
+        .select('id, farmer_id, cropName, variety, status, created_at')
         .eq('farmer_id', farmerId)
         .order('created_at', { ascending: false });
 
@@ -280,7 +280,7 @@ export const db = {
     }
   },
 
-  createCrop: async (crop: any) => {
+  createCrop: async (crop: Record<string, unknown>) => {
     try {
       const { data, error } = await supabase
         .from('crops')
@@ -297,7 +297,7 @@ export const db = {
   },
 
   // Disease Scans
-  createDiseaseScan: async (scan: any) => {
+  createDiseaseScan: async (scan: Record<string, unknown>) => {
     try {
       const { data, error } = await supabase
         .from('disease_scans')
@@ -317,7 +317,7 @@ export const db = {
     try {
       const { data, error } = await supabase
         .from('disease_scans')
-        .select('*')
+        .select('id, user_id, image_url, disease_name, confidence, severity, treatment, created_at')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
@@ -334,7 +334,7 @@ export const db = {
     try {
       let query = supabase
         .from('market_prices')
-        .select('*')
+        .select('id, crop, country, state, price_per_kg, currency, source, trend, change_percent, recorded_at')
         .order('recorded_at', { ascending: false });
 
       if (crop) query = query.eq('crop', crop);
@@ -352,7 +352,7 @@ export const db = {
   },
 
   // Farm Activities
-  createActivity: async (activity: any) => {
+  createActivity: async (activity: Record<string, unknown>) => {
     try {
       const { data, error } = await supabase
         .from('farm_activities')
@@ -372,7 +372,7 @@ export const db = {
     try {
       const { data, error } = await supabase
         .from('farm_activities')
-        .select('*')
+        .select('id, farm_id, farmer_id, activity_type, crop_id, date, quantity, unit, cost, notes, created_at')
         .eq('farmer_id', farmerId)
         .order('date', { ascending: false });
 
@@ -388,7 +388,7 @@ export const db = {
 // Realtime subscriptions
 export const realtime = {
   // Subscribe to price alerts
-  subscribeToPriceAlerts: (crops: string[], callback: (payload: any) => void) => {
+  subscribeToPriceAlerts: (crops: string[], callback: (payload: unknown) => void) => {
     const channel = supabase
       .channel('price-alerts')
       .on(
@@ -407,7 +407,7 @@ export const realtime = {
   },
 
   // Unsubscribe from channel
-  unsubscribe: (channel: any) => {
+  unsubscribe: (channel: ReturnType<typeof supabase.channel>) => {
     supabase.removeChannel(channel);
   },
 };

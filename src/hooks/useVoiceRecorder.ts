@@ -162,6 +162,7 @@ export function useVoiceRecorder(
         onError?.(notFoundError);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSupported, maxDuration, onError, onMaxDurationReached]);
 
   /**
