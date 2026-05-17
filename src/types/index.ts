@@ -96,6 +96,7 @@ export interface DiseaseResult {
   severity: 'low' | 'medium' | 'high';
   treatment: Treatment;
   imageUrl?: string;
+  voiceNoteUrl?: string;
 }
 
 // Market Types

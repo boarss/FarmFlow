@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, Upload } from 'lucide-react';
 import { CameraCapture } from './CameraCapture';
 import { VoiceRecorder } from './VoiceRecorder';
 import { DiseaseResults } from './DiseaseResults';
 import { Language, DiseaseResult, CropType } from '../../types';
 import { detectDisease } from '../../services/mockDiseaseService';
+import { useFileUpload } from '../../hooks/useFileUpload';
+import { useDiseaseScan } from '../../hooks/useDiseaseScan';
+import { diseaseResultToScanInput } from '../../services/diseaseDbService';
 
 export interface DiseaseScanFormProps {
   language?: Language;
@@ -35,6 +38,13 @@ export function DiseaseScanForm({
   const [result, setResult] = useState<DiseaseResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string>('');
+
+  // File upload hook
+  const { uploadImage, uploadVoice, imageUpload, voiceUpload, isUploading } = useFileUpload();
+  
+  // Database operations hook
+  const { createScan, isLoading: isSavingToDb } = useDiseaseScan();
 
   /**
    * Handle image capture
@@ -65,7 +75,7 @@ export function DiseaseScanForm({
   };
 
   /**
-   * Handle form submission
+   * Handle form submission with file uploads and database save
    */
   const handleSubmit = async () => {
     if (!capturedImage || !imagePreview) {
@@ -78,16 +88,50 @@ export function DiseaseScanForm({
     setError(null);
 
     try {
-      // Call disease detection service
+      // TODO: Get actual user ID from auth context
+      // For now, using a mock user ID
+      const userId = 'mock-user-id';
+
+      // Upload image to Supabase Storage
+      setUploadStatus('Uploading image...');
+      const imageResult = await uploadImage(capturedImage, userId);
+      
+      // Upload voice note if available
+      let voiceResult = null;
+      if (voiceNote) {
+        setUploadStatus('Uploading voice note...');
+        voiceResult = await uploadVoice(voiceNote, userId);
+      }
+
+      // Call disease detection service with uploaded image URL
+      setUploadStatus('Analyzing disease...');
       const detectionResult = await detectDisease(imagePreview);
 
-      setResult(detectionResult);
+      // Add storage URLs to result
+      const enrichedResult: DiseaseResult = {
+        ...detectionResult,
+        imageUrl: imageResult.publicUrl,
+        voiceNoteUrl: voiceResult?.signedUrl,
+      };
+
+      // Save to database
+      setUploadStatus('Saving scan results...');
+      const scanInput = diseaseResultToScanInput(
+        enrichedResult,
+        userId,
+        cropType || undefined
+      );
+      await createScan(scanInput);
+
+      setResult(enrichedResult);
       setStep('results');
-      onScanComplete?.(detectionResult);
+      setUploadStatus('');
+      onScanComplete?.(enrichedResult);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to analyze image';
       setError(errorMessage);
       setStep('input-method');
+      setUploadStatus('');
     } finally {
       setIsProcessing(false);
     }
@@ -257,11 +301,36 @@ export function DiseaseScanForm({
         <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
           <Loader2 className="w-16 h-16 animate-spin text-green-600 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            Analyzing Your Crop...
+            {uploadStatus || 'Analyzing Your Crop...'}
           </h3>
           <p className="text-gray-600 mb-4">
-            Our AI is examining the image to identify any diseases
+            {isUploading
+              ? 'Uploading files to secure storage...'
+              : 'Our AI is examining the image to identify any diseases'
+            }
           </p>
+          
+          {/* Upload Progress */}
+          {isUploading && (
+            <div className="mb-4">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <Upload className="w-5 h-5 text-green-600" />
+                <span className="text-sm font-medium text-gray-700">
+                  {imageUpload.isUploading && `Image: ${imageUpload.progress}%`}
+                  {voiceUpload.isUploading && ` | Voice: ${voiceUpload.progress}%`}
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div
+                  className="bg-green-600 h-full transition-all duration-300 ease-out"
+                  style={{
+                    width: `${Math.max(imageUpload.progress, voiceUpload.progress)}%`
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
             <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse delay-75"></div>
@@ -288,6 +357,9 @@ export function DiseaseScanForm({
           <p>Image: {capturedImage ? '✓' : '✗'}</p>
           <p>Voice: {voiceNote ? `✓ (${voiceDuration}s)` : '✗'}</p>
           <p>Crop: {cropType || 'Not selected'}</p>
+          <p>Upload Status: {uploadStatus || 'Idle'}</p>
+          <p>Image Upload: {imageUpload.result?.publicUrl ? '✓' : '✗'}</p>
+          <p>Voice Upload: {voiceUpload.result?.signedUrl ? '✓' : '✗'}</p>
         </div>
       )}
     </div>
