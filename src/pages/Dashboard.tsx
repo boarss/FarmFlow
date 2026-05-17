@@ -16,6 +16,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/supabase';
 import { Crop, MarketPrice, WeatherData } from '../types';
 import { getCurrencySymbol, COUNTRIES } from '../constants/regions';
+import { dataService } from '../services/dataService';
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -48,18 +49,32 @@ export function Dashboard() {
           setMarketPrices(pricesResult.data || []);
         }
 
-        // Mock weather for now (as per TRD, real integration would call /api/weather)
-        setWeather({
-          location: { lat: farmer.location?.lat || 0, lng: farmer.location?.lng || 0, name: farmer.state },
-          current: {
-            temperature: 32,
-            condition: 'Sunny',
-            humidity: 65,
-            windSpeed: 12
-          },
-          forecast: [],
-          alerts: []
-        });
+        // Fetch real weather using dataService
+        const lat = farmer.location?.lat || 9.0820; // Default to Nigeria center if no location
+        const lng = farmer.location?.lng || 8.6753;
+        
+        const liveWeather = await dataService.getCurrentWeather(
+          lat, 
+          lng, 
+          farmer.state || country?.name || 'Local Region'
+        );
+        
+        if (liveWeather) {
+          setWeather(liveWeather);
+        } else {
+          // Fallback to mock if API fails
+          setWeather({
+            location: { lat, lng, name: farmer.state || 'Unknown' },
+            current: {
+              temperature: 30,
+              condition: 'Sunny',
+              humidity: 60,
+              windSpeed: 10
+            },
+            forecast: [],
+            alerts: []
+          });
+        }
 
       } catch (error) {
         console.error('Error loading dashboard data:', error);

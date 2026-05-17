@@ -4,6 +4,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { ArrowLeft, Calendar as CalendarIcon, Info } from 'lucide-react';
 import { COUNTRIES } from '../constants/regions';
 import { PLANTING_CALENDAR, CropSchedule } from '../constants/plantingCalendar';
+import { dataService } from '../services/dataService';
+import { Droplets, Sun, TrendingUp } from 'lucide-react';
 
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -33,6 +35,36 @@ export function PlantingCalendar() {
   const toPlant = cropsData.filter(crop => isActionMonth(crop, 'plant', selectedMonth));
   const toHarvest = cropsData.filter(crop => isActionMonth(crop, 'harvest', selectedMonth));
 
+  const [monthlyRainfall, setMonthlyRainfall] = useState<number | null>(null);
+  const [loadingClimate, setLoadingClimate] = useState(false);
+
+  useEffect(() => {
+    async function fetchClimateInfo() {
+      if (!farmer?.location) return;
+      
+      setLoadingClimate(true);
+      try {
+        const nasaData = await dataService.getAgroclimatology(
+          farmer.location.lat, 
+          farmer.location.lng
+        );
+        
+        if (nasaData && nasaData.PRECTOTCORR) {
+          // NASA returns an object with dates as keys. We'll average it for the month or just show the daily average if 30 days
+          const values = Object.values(nasaData.PRECTOTCORR) as number[];
+          const avgRainfall = values.reduce((a, b) => a + b, 0) / values.length;
+          setMonthlyRainfall(avgRainfall);
+        }
+      } catch (e) {
+        console.error("Climate fetch failed", e);
+      } finally {
+        setLoadingClimate(false);
+      }
+    }
+    
+    fetchClimateInfo();
+  }, [farmer?.location]);
+
   return (
     <div className="min-h-screen bg-gray-50 pb-10">
       {/* Header */}
@@ -58,6 +90,24 @@ export function PlantingCalendar() {
           <p className="text-gray-500 text-sm">
             Discover optimal times for planting and harvesting.
           </p>
+        </div>
+
+        {/* Climate Insights */}
+        <div className="bg-blue-600 rounded-[2rem] p-6 mb-8 text-white shadow-lg relative overflow-hidden">
+          <div className="relative z-10">
+            <h3 className="text-blue-100 font-semibold mb-2">Regional Climate (Past 30 Days)</h3>
+            <div className="flex items-end gap-2">
+              <span className="text-4xl font-bold">
+                {loadingClimate ? '...' : (monthlyRainfall?.toFixed(1) || '0.0')}
+              </span>
+              <span className="text-blue-200 mb-1">mm daily avg rainfall</span>
+            </div>
+            <p className="text-xs text-blue-200 mt-3 flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" />
+              Source: NASA POWER Point Data
+            </p>
+          </div>
+          <Droplets className="absolute right-[-10%] bottom-[-10%] w-32 h-32 text-blue-500/30 -rotate-12" />
         </div>
 
         {/* Month Selector */}
