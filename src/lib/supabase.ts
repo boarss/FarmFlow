@@ -330,7 +330,7 @@ export const db = {
   },
 
   // Market Prices
-  getMarketPrices: async (crop?: string, state?: string) => {
+  getMarketPrices: async (crop?: string, country?: string, state?: string) => {
     try {
       let query = supabase
         .from('market_prices')
@@ -338,6 +338,7 @@ export const db = {
         .order('recorded_at', { ascending: false });
 
       if (crop) query = query.eq('crop', crop);
+      if (country) query = query.eq('country', country);
       if (state) query = query.eq('state', state);
 
       const { data, error } = await query.limit(100);

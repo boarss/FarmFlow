@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, History } from 'lucide-react';
 import { DiseaseScanForm } from '../components/disease';
 import { DiseaseResult, Language } from '../types';
+import { useDiseaseScan } from '../hooks/useDiseaseScan';
+import { useAuth } from '../contexts/AuthContext';
+import { diseaseResultToScanInput } from '../services/diseaseDbService';
 
 /**
  * Disease Detection Page
@@ -10,6 +13,8 @@ import { DiseaseResult, Language } from '../types';
  */
 export function DiseaseDetection() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { createScan, isLoading: isSaving } = useDiseaseScan();
   const [language] = useState<Language>('english'); // TODO: Get from user settings
 
   /**
@@ -17,17 +22,29 @@ export function DiseaseDetection() {
    */
   const handleScanComplete = (result: DiseaseResult) => {
     console.log('Scan completed:', result);
-    // TODO: Save to database
   };
 
   /**
    * Handle save result
    */
-  const handleSaveResult = (result: DiseaseResult) => {
-    console.log('Saving result:', result);
-    // TODO: Save to Supabase
-    // Show success message
-    alert('Result saved successfully!');
+  const handleSaveResult = async (result: DiseaseResult) => {
+    if (!user) {
+      alert('You must be logged in to save results.');
+      return;
+    }
+
+    try {
+      console.log('Saving result:', result);
+      
+      const scanInput = diseaseResultToScanInput(result, user.id);
+      await createScan(scanInput);
+      
+      // Show success message
+      alert('Result saved successfully!');
+    } catch (error) {
+      console.error('Error saving result:', error);
+      alert('Failed to save result. Please try again.');
+    }
   };
 
   /**
@@ -78,6 +95,7 @@ export function DiseaseDetection() {
           language={language}
           onScanComplete={handleScanComplete}
           onSave={handleSaveResult}
+          isSaving={isSaving}
         />
       </main>
 

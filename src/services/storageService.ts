@@ -38,8 +38,7 @@ export const STORAGE_BUCKETS = {
  */
 export async function uploadDiseaseImage(
   file: File,
-  userId: string,
-  onProgress?: (progress: UploadProgress) => void
+  userId: string
 ): Promise<UploadResult> {
   try {
     // Generate unique filename with timestamp
@@ -83,8 +82,7 @@ export async function uploadDiseaseImage(
  */
 export async function uploadVoiceNote(
   audioBlob: Blob,
-  userId: string,
-  onProgress?: (progress: UploadProgress) => void
+  userId: string
 ): Promise<UploadResult> {
   try {
     // Generate unique filename with timestamp

@@ -4,12 +4,13 @@ export interface User {
   phone: string;
   name: string;
   language: Language;
+  country: Country;
   createdAt: string;
 }
 
 export interface Farmer extends User {
   farmerId: string;
-  state: string;
+  state: string; // state or region depending on country
   lga?: string;
   location?: {
     lat: number;
@@ -18,8 +19,10 @@ export interface Farmer extends User {
   farmSize?: number; // in hectares
 }
 
-// Language Types
+// Language & Country Types
 export type Language = 'english' | 'hausa' | 'yoruba' | 'igbo';
+export type Country = 'nigeria' | 'ghana' | 'kenya' | 'mali';
+export type Currency = 'NGN' | 'GHS' | 'KES' | 'XOF';
 
 export interface LocalizedText {
   english: string;
@@ -103,10 +106,12 @@ export interface DiseaseResult {
 export interface MarketPrice {
   id: string;
   crop: CropType;
+  country: Country;
   state?: string;
-  pricePerKg: number; // in Naira
+  pricePerKg: number;
+  currency: Currency;
   priceUsdPerTonne?: number;
-  source: 'faostat' | 'esoko' | 'nigeria_farm_data';
+  source: 'faostat' | 'esoko' | 'nigeria_farm_data' | 'other';
   trend?: 'up' | 'down' | 'stable';
   changePercent?: number;
   recordedAt: string;

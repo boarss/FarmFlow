@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import {
   uploadDiseaseImage,
   uploadVoiceNote,
-  UploadProgress,
   UploadResult,
 } from '../services/storageService';
 

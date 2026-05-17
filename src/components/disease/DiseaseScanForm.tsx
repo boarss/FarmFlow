@@ -13,6 +13,7 @@ export interface DiseaseScanFormProps {
   language?: Language;
   onScanComplete?: (result: DiseaseResult) => void;
   onSave?: (result: DiseaseResult) => void;
+  isSaving?: boolean;
   className?: string;
 }
 
@@ -27,6 +28,7 @@ export function DiseaseScanForm({
   language = 'english',
   onScanComplete,
   onSave,
+  isSaving = false,
   className = '',
 }: DiseaseScanFormProps) {
   const [step, setStep] = useState<ScanStep>('input-method');
@@ -44,7 +46,7 @@ export function DiseaseScanForm({
   const { uploadImage, uploadVoice, imageUpload, voiceUpload, isUploading } = useFileUpload();
   
   // Database operations hook
-  const { createScan, isLoading: isSavingToDb } = useDiseaseScan();
+  const { createScan } = useDiseaseScan();
 
   /**
    * Handle image capture
@@ -346,7 +348,7 @@ export function DiseaseScanForm({
           language={language}
           onRetake={handleRetake}
           onSave={handleSaveResult}
-          loading={isProcessing}
+          loading={isProcessing || isSaving}
         />
       )}
 

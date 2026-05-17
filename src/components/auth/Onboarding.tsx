@@ -1,23 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Loader2, MapPin, User, Sprout } from 'lucide-react';
+import { Country } from '../../types';
+import { Loader2, MapPin, User, Sprout, Globe } from 'lucide-react';
 
 interface OnboardingData {
   name: string;
+  country: string | '';
   state: string;
   lga: string;
   farmSize: string;
   primaryCrops: string[];
 }
 
-const NIGERIAN_STATES = [
-  'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue',
-  'Borno', 'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu', 'Gombe',
-  'Imo', 'Jigawa', 'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara',
-  'Lagos', 'Nasarawa', 'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau',
-  'Rivers', 'Sokoto', 'Taraba', 'Yobe', 'Zamfara', 'FCT'
-];
+import { COUNTRIES, REGIONS } from '../../constants/regions';
 
 const COMMON_CROPS = [
   'Maize', 'Rice', 'Cassava', 'Yam', 'Sorghum', 'Millet',
@@ -30,6 +26,7 @@ export function Onboarding() {
   const [error, setError] = useState('');
   const [data, setData] = useState<OnboardingData>({
     name: '',
+    country: '',
     state: '',
     lga: '',
     farmSize: '',
@@ -56,11 +53,15 @@ export function Onboarding() {
       setError('Please enter your name');
       return;
     }
-    if (step === 2 && (!data.state || !data.lga)) {
-      setError('Please select your state and LGA');
+    if (step === 2 && !data.country) {
+      setError('Please select your country');
       return;
     }
-    if (step === 3 && !data.farmSize) {
+    if (step === 3 && (!data.state || (data.country === 'nigeria' && !data.lga))) {
+      setError('Please select your region and location details');
+      return;
+    }
+    if (step === 4 && !data.farmSize) {
       setError('Please enter your farm size');
       return;
     }
@@ -89,11 +90,12 @@ export function Onboarding() {
         user_id: user.id,
         phone: user.phone,
         name: data.name,
+        country: data.country as Country,
         state: data.state,
         lga: data.lga,
         farm_size: parseFloat(data.farmSize),
         primary_crops: data.primaryCrops,
-        language: 'english',
+        language: 'english', // Default to English for multi-country for now
       });
 
       if (result.success) {
@@ -148,10 +150,47 @@ export function Onboarding() {
           <div className="space-y-6">
             <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                <Globe className="h-8 w-8 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                Where are you based?
+              </h2>
+              <p className="text-gray-600">
+                Select your country
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {COUNTRIES.map(country => (
+                <button
+                  key={country.id}
+                  type="button"
+                  onClick={() => {
+                    handleChange('country', country.id);
+                    handleChange('state', ''); // Reset state when country changes
+                  }}
+                  className={`px-4 py-3 rounded-lg border-2 transition-all text-sm font-semibold ${
+                    data.country === country.id
+                      ? 'border-green-500 bg-green-50 text-green-700'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  {country.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
                 <MapPin className="h-8 w-8 text-green-600" />
               </div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                Where is your farm?
+                In which region?
               </h2>
               <p className="text-gray-600">
                 This helps us provide localized information
@@ -160,7 +199,7 @@ export function Onboarding() {
 
             <div>
               <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-2">
-                State
+                {data.country === 'kenya' ? 'County' : 'State / Region'}
               </label>
               <select
                 id="state"
@@ -168,30 +207,32 @@ export function Onboarding() {
                 onChange={(e) => handleChange('state', e.target.value)}
                 className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
-                <option value="">Select your state</option>
-                {NIGERIAN_STATES.map(state => (
-                  <option key={state} value={state}>{state}</option>
+                <option value="">Select your {data.country === 'kenya' ? 'county' : 'region'}</option>
+                {data.country && REGIONS[data.country]?.map(region => (
+                  <option key={region} value={region}>{region}</option>
                 ))}
               </select>
             </div>
 
-            <div>
-              <label htmlFor="lga" className="block text-sm font-medium text-gray-700 mb-2">
-                Local Government Area (LGA)
-              </label>
-              <input
-                id="lga"
-                type="text"
-                value={data.lga}
-                onChange={(e) => handleChange('lga', e.target.value)}
-                placeholder="Enter your LGA"
-                className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
-            </div>
+            {data.country === 'nigeria' && (
+              <div>
+                <label htmlFor="lga" className="block text-sm font-medium text-gray-700 mb-2">
+                  Local Government Area (LGA)
+                </label>
+                <input
+                  id="lga"
+                  type="text"
+                  value={data.lga}
+                  onChange={(e) => handleChange('lga', e.target.value)}
+                  placeholder="Enter your LGA"
+                  className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+              </div>
+            )}
           </div>
         );
 
-      case 3:
+      case 4:
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
@@ -224,7 +265,7 @@ export function Onboarding() {
           </div>
         );
 
-      case 4:
+      case 5:
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
@@ -270,16 +311,16 @@ export function Onboarding() {
         <div className="mb-8">
           <div className="flex justify-between mb-2">
             <span className="text-sm font-medium text-gray-700">
-              Step {step} of 4
+              Step {step} of 5
             </span>
             <span className="text-sm text-gray-500">
-              {Math.round((step / 4) * 100)}%
+              {Math.round((step / 5) * 100)}%
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
               className="bg-green-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(step / 4) * 100}%` }}
+              style={{ width: `${(step / 5) * 100}%` }}
             />
           </div>
         </div>
@@ -306,7 +347,7 @@ export function Onboarding() {
                 Back
               </button>
             )}
-            {step < 4 ? (
+            {step < 5 ? (
               <button
                 onClick={handleNext}
                 className="flex-1 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
