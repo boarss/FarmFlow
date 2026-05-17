@@ -93,8 +93,8 @@ export function EmailRegister() {
       <div className="max-w-md w-full">
         {/* Logo and Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-full mb-4">
-            <span className="text-3xl">🌾</span>
+          <div className="flex justify-center mb-4">
+            <img src="/logo.png" alt="FarmFlow Logo" className="h-16 w-auto object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Create Account
