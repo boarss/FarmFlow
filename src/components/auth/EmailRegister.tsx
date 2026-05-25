@@ -59,7 +59,8 @@ export function EmailRegister() {
       
       if (result.success) {
         // Check if email confirmation is required
-        if (result.data?.user && !result.data.user.confirmed_at) {
+        const resultData = result.data as any;
+        if (resultData?.user && !resultData.user.confirmed_at) {
           navigate('/auth/verify-email', {
             state: { email: normalizedEmail }
           });
@@ -67,7 +68,7 @@ export function EmailRegister() {
           navigate('/onboarding');
         }
       } else {
-        const errorMessage = result.error?.message || 'Failed to create account. Please try again.';
+        const errorMessage = (result.error as Error)?.message || 'Failed to create account. Please try again.';
         setError(errorMessage);
       }
     } catch (err) {

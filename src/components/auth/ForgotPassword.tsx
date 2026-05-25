@@ -31,7 +31,7 @@ export function ForgotPassword() {
       if (result.success) {
         setEmailSent(true);
       } else {
-        const errorMessage = result.error?.message || 'Failed to send reset email. Please try again.';
+        const errorMessage = (result.error as any)?.message || 'Failed to send reset email. Please try again.';
         setError(errorMessage);
       }
     } catch (err) {

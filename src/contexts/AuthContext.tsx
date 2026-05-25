@@ -9,13 +9,13 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   // Phone authentication
-  signInWithPhone: (phone: string) => Promise<{ success: boolean; error?: unknown }>;
-  verifyOTP: (phone: string, token: string) => Promise<{ success: boolean; error?: unknown }>;
+  signInWithPhone: (phone: string) => Promise<{ success: boolean; data?: any; error?: any }>;
+  verifyOTP: (phone: string, token: string) => Promise<{ success: boolean; data?: any; error?: any }>;
   // Email/Password authentication
-  signUpWithEmail: (email: string, password: string, name?: string) => Promise<{ success: boolean; error?: unknown }>;
-  signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; error?: unknown }>;
-  resetPassword: (email: string) => Promise<{ success: boolean; error?: unknown }>;
-  updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: unknown }>;
+  signUpWithEmail: (email: string, password: string, name?: string) => Promise<{ success: boolean; data?: any; error?: any }>;
+  signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; data?: any; error?: any }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; data?: any; error?: any }>;
+  updatePassword: (newPassword: string) => Promise<{ success: boolean; data?: any; error?: any }>;
   // Common methods
   signOut: () => Promise<void>;
   updateFarmerProfile: (updates: Partial<Farmer>) => Promise<void>;
@@ -77,7 +77,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const result = await db.getFarmer(userId);
       
       if (result.success && result.data) {
-        setFarmer(result.data as Farmer);
+        const data = result.data as any;
+        setFarmer({
+          ...data,
+          farmerId: data.id,
+          createdAt: data.created_at,
+          farmSize: data.farm_size
+        } as Farmer);
       }
     } catch (error) {
       console.error('Error loading farmer profile:', error);

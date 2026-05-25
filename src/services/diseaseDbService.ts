@@ -59,7 +59,7 @@ export interface ScanFilters {
  */
 export async function createDiseaseScan(
   input: CreateScanInput
-): Promise<{ success: boolean; data?: DiseaseScan; error?: unknown }> {
+): Promise<{ success: boolean; data?: DiseaseScan; error?: any }> {
   try {
     const { data, error } = await supabase
       .from('disease_scans')
@@ -95,7 +95,7 @@ export async function createDiseaseScan(
  */
 export async function getDiseaseScanById(
   scanId: string
-): Promise<{ success: boolean; data?: DiseaseScan; error?: unknown }> {
+): Promise<{ success: boolean; data?: DiseaseScan; error?: any }> {
   try {
     const { data, error } = await supabase
       .from('disease_scans')
@@ -120,7 +120,7 @@ export async function getDiseaseScanById(
  */
 export async function getUserDiseaseScans(
   filters: ScanFilters = {}
-): Promise<{ success: boolean; data?: DiseaseScan[]; error?: unknown; total?: number }> {
+): Promise<{ success: boolean; data?: DiseaseScan[]; error?: any; total?: number }> {
   try {
     let query = supabase
       .from('disease_scans')
@@ -187,7 +187,7 @@ export async function getUserDiseaseScans(
 export async function updateDiseaseScan(
   scanId: string,
   updates: UpdateScanInput
-): Promise<{ success: boolean; data?: DiseaseScan; error?: unknown }> {
+): Promise<{ success: boolean; data?: DiseaseScan; error?: any }> {
   try {
     const updateData: Record<string, unknown> = {};
 
@@ -224,7 +224,7 @@ export async function updateDiseaseScan(
  */
 export async function deleteDiseaseScan(
   scanId: string
-): Promise<{ success: boolean; error?: unknown }> {
+): Promise<{ success: boolean; error?: any }> {
   try {
     const { error } = await supabase
       .from('disease_scans')
@@ -260,7 +260,7 @@ export async function getUserScanStats(
     };
     recentScans: DiseaseScan[];
   };
-  error?: unknown;
+  error?: any;
 }> {
   try {
     // Get all scans for user
@@ -310,7 +310,7 @@ export async function getUserScanStats(
 export async function searchDiseaseScans(
   userId: string,
   searchTerm: string
-): Promise<{ success: boolean; data?: DiseaseScan[]; error?: unknown }> {
+): Promise<{ success: boolean; data?: DiseaseScan[]; error?: any }> {
   try {
     const { data, error } = await supabase
       .from('disease_scans')
@@ -337,7 +337,7 @@ export async function searchDiseaseScans(
  */
 export async function getUnverifiedScans(
   limit: number = 20
-): Promise<{ success: boolean; data?: DiseaseScan[]; error?: unknown }> {
+): Promise<{ success: boolean; data?: DiseaseScan[]; error?: any }> {
   try {
     const { data, error } = await supabase
       .from('disease_scans')
@@ -362,19 +362,20 @@ export async function getUnverifiedScans(
  * Map database record to DiseaseScan type
  */
 function mapDbScanToDiseaseScan(dbScan: Record<string, unknown>): DiseaseScan {
+  const scan = dbScan as any;
   return {
-    id: dbScan.id,
-    userId: dbScan.user_id,
-    imageUrl: dbScan.image_url,
-    voiceNoteUrl: dbScan.voice_note_url,
-    diseaseName: dbScan.disease_name,
-    localizedName: dbScan.localized_name,
-    confidence: dbScan.confidence,
-    severity: dbScan.severity,
-    treatment: dbScan.treatment,
-    verifiedBy: dbScan.verified_by,
-    verifiedAt: dbScan.verified_at,
-    createdAt: dbScan.created_at,
+    id: scan.id,
+    userId: scan.user_id,
+    imageUrl: scan.image_url,
+    voiceNoteUrl: scan.voice_note_url,
+    diseaseName: scan.disease_name,
+    localizedName: scan.localized_name,
+    confidence: scan.confidence,
+    severity: scan.severity,
+    treatment: scan.treatment,
+    verifiedBy: scan.verified_by,
+    verifiedAt: scan.verified_at,
+    createdAt: scan.created_at,
   };
 }
 

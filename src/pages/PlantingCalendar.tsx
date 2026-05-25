@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { ArrowLeft, Calendar as CalendarIcon, Info } from 'lucide-react';
+import { ArrowLeft, Calendar as CalendarIcon, Info, Droplets, TrendingUp } from 'lucide-react';
 import { COUNTRIES } from '../constants/regions';
 import { PLANTING_CALENDAR, CropSchedule } from '../constants/plantingCalendar';
 import { dataService } from '../services/dataService';
-import { Droplets, Sun, TrendingUp } from 'lucide-react';
 
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',

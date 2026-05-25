@@ -39,14 +39,33 @@ export function Dashboard() {
         
         // Load crops
         const cropsResult = await db.getCrops(farmer.id);
-        if (cropsResult.success) {
-          setCrops(cropsResult.data || []);
+        if (cropsResult.success && cropsResult.data) {
+          setCrops(cropsResult.data.map(c => ({
+            id: c.id,
+            farmerId: c.farmer_id,
+            cropName: c.cropName,
+            variety: c.variety,
+            status: c.status as 'active' | 'harvested' | 'failed',
+            plantedDate: c.created_at,
+            createdAt: c.created_at
+          })));
         }
 
         // Load market prices for the farmer's country
         const pricesResult = await db.getMarketPrices(undefined, countryId);
-        if (pricesResult.success) {
-          setMarketPrices(pricesResult.data || []);
+        if (pricesResult.success && pricesResult.data) {
+          setMarketPrices(pricesResult.data.map((p: any) => ({
+            id: p.id,
+            crop: p.crop,
+            country: p.country,
+            state: p.state,
+            pricePerKg: p.price_per_kg,
+            currency: p.currency,
+            source: p.source,
+            trend: p.trend as 'up' | 'down' | 'stable',
+            changePercent: p.change_percent,
+            recordedAt: p.recorded_at
+          })));
         }
 
         // Fetch real weather using dataService
@@ -115,7 +134,7 @@ export function Dashboard() {
               <Thermometer className="w-5 h-5 text-orange-300" />
               <div>
                 <p className="text-sm text-green-100">Temp</p>
-                <p className="font-bold text-lg">{weather?.current.temperature}°C</p>
+                <p className="font-bold text-lg">{weather?.current?.temperature}°C</p>
               </div>
             </div>
             <div className="h-8 w-px bg-green-400/30"></div>
@@ -123,7 +142,7 @@ export function Dashboard() {
               <Droplets className="w-5 h-5 text-blue-300" />
               <div>
                 <p className="text-sm text-green-100">Humidity</p>
-                <p className="font-bold text-lg">{weather?.current.humidity}%</p>
+                <p className="font-bold text-lg">{weather?.current?.humidity}%</p>
               </div>
             </div>
             <div className="h-8 w-px bg-green-400/30"></div>
@@ -131,7 +150,7 @@ export function Dashboard() {
               <Cloud className="w-5 h-5 text-white" />
               <div>
                 <p className="text-sm text-green-100">Sky</p>
-                <p className="font-bold text-lg">{weather?.current.condition}</p>
+                <p className="font-bold text-lg">{weather?.current?.condition}</p>
               </div>
             </div>
           </div>

@@ -31,7 +31,19 @@ export function MarketPrices() {
       setLoading(true);
       const result = await db.getMarketPrices(undefined, countryId);
       if (result.success) {
-        setPrices(result.data || []);
+        const mappedPrices = (result.data || []).map((p: any) => ({
+          id: p.id,
+          crop: p.crop,
+          country: p.country,
+          state: p.state,
+          pricePerKg: p.price_per_kg,
+          currency: p.currency,
+          source: p.source,
+          trend: p.trend,
+          changePercent: p.change_percent,
+          recordedAt: p.recorded_at
+        }));
+        setPrices(mappedPrices);
       }
     } catch (error) {
       console.error('Error loading prices:', error);

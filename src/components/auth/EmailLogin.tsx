@@ -41,7 +41,7 @@ export function EmailLogin() {
         // Navigate to dashboard or onboarding based on profile completion
         navigate('/dashboard');
       } else {
-        const errorMessage = result.error?.message || 'Invalid email or password';
+        const errorMessage = (result.error as Error)?.message || 'Invalid email or password';
         setError(errorMessage);
       }
     } catch (err) {

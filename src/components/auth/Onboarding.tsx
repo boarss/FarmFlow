@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Country } from '../../types';
-import { Loader2, MapPin, User, Sprout, Globe } from 'lucide-react';
+import { Loader2, MapPin, User, Sprout, Globe, Phone } from 'lucide-react';
 import { COUNTRIES, REGIONS } from '../../constants/regions';
 
 interface OnboardingData {
   name: string;
+  phone: string;
   country: string | '';
   state: string;
   lga: string;
@@ -25,6 +26,7 @@ export function Onboarding() {
   const [error, setError] = useState('');
   const [data, setData] = useState<OnboardingData>({
     name: '',
+    phone: '',
     country: '',
     state: '',
     lga: '',
@@ -48,9 +50,15 @@ export function Onboarding() {
   };
 
   const handleNext = () => {
-    if (step === 1 && !data.name) {
-      setError('Please enter your name');
-      return;
+    if (step === 1) {
+      if (!data.name) {
+        setError('Please enter your name');
+        return;
+      }
+      if (!user?.phone && !data.phone) {
+        setError('Please enter your phone number');
+        return;
+      }
     }
     if (step === 2 && !data.country) {
       setError('Please select your country');
@@ -87,7 +95,7 @@ export function Onboarding() {
       const { db } = await import('../../lib/supabase');
       const result = await db.createFarmer({
         user_id: user.id,
-        phone: user.phone,
+        phone: user.phone || data.phone,
         name: data.name,
         country: data.country as Country,
         state: data.state,
@@ -141,6 +149,28 @@ export function Onboarding() {
                 autoFocus
               />
             </div>
+
+            {!user?.phone && (
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Phone className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    id="phone"
+                    type="tel"
+                    value={data.phone}
+                    onChange={(e) => handleChange('phone', e.target.value)}
+                    placeholder="080XXXXXXXX"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+              </div>
+            )}
           </div>
         );
 
