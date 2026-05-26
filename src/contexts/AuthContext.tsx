@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User as SupabaseUser, Session } from '@supabase/supabase-js';
-import { auth } from '../lib/supabase';
+import { auth, db } from '../lib/supabase';
 import { Farmer } from '../types';
 
 interface AuthContextType {
@@ -73,7 +73,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadFarmerProfile = async (userId: string) => {
     try {
-      const { db } = await import('../lib/supabase');
       const result = await db.getFarmer(userId);
       
       if (result.success && result.data) {
@@ -166,7 +165,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!farmer) return;
 
     try {
-      const { db } = await import('../lib/supabase');
       const result = await db.updateFarmer(farmer.id, updates);
       
       if (result.success && result.data) {

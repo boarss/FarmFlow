@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { validateAndFormatPhone } from '../../utils/phoneValidation';
@@ -9,8 +9,18 @@ export function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { signInWithPhone } = useAuth();
+  const { signInWithPhone, user, farmer } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      if (!farmer) {
+        navigate('/onboarding', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+    }
+  }, [user, farmer, navigate]);
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

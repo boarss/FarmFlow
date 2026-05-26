@@ -107,8 +107,8 @@ function App() {
               }
             />
             
-            {/* Default Route - Go directly to dashboard */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            {/* Default Route - Go directly to auth */}
+            <Route path="/" element={<Navigate to="/auth/login" replace />} />
             <Route path="*" element={<Navigate to="/auth/login" replace />} />
           </Routes>
         </div>
